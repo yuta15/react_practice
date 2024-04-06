@@ -1,19 +1,57 @@
-import Result from "./components/_header";
-import Counter from "./components/couter";
-import Greeting from "./components/greeting";
-import Welcome from "./components/welcome"
+import { useState } from 'react';
+import AddTodo from './components/AddTodo.js';
+import TaskList from './components/TaskList.js';
 
-export default function App() {
+let nextId = 3;
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+];
+
+export default function TaskApp() {
+  const [todos, setTodos] = useState(
+    initialTodos
+  );
+
+  function handleAddTodo(title) {
+    setTodos([
+      ...todos,
+      {
+        id:nextId,
+        title: title,
+        done: false
+      }
+    ]);
+    nextId += 1;
+  }
+
+  function handleChangeTodo(nextTodo) {
+    const newTodos = todos.map(todo => {
+      if(todo.id === nextTodo.id){
+        return nextTodo;
+      }else{
+        return todo;
+      }
+    });
+    setTodos(newTodos);
+  }
+
+  function handleDeleteTodo(todoId) {
+    const newTodos = todos.filter(t => t.id !== todoId);
+    setTodos(newTodos);
+  }
+
   return (
-    <div>
-        <Result/>
-        <span>--------------------------------------------------------------</span>
-        <Counter/>
-        <span>--------------------------------------------------------------</span>
-        <Greeting/>
-        <span>--------------------------------------------------------------</span>
-        <Welcome></Welcome>
-
-    </div>
+    <>
+      <AddTodo
+        onAddTodo={handleAddTodo}
+      />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
+    </>
   );
 }
